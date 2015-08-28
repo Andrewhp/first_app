@@ -5,13 +5,13 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @users = User.all.page(params[:page])
   end
 
   # GET /users/1
   # GET /users/1.json
   def show
-    @posts = @user.posts
+    @posts = @user.posts.page(params[:page])
   end
 
   # GET /users/new
@@ -30,24 +30,20 @@ class UsersController < ApplicationController
     if  @user.save
       sign_in (@user)
       flash[:success] = "Welcome, #{@user.name}!"
-      redirect_to root_path
+      redirect_to @user
     else
      render action: 'new'
-      
-    end
+      end
   end
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user }
-      else
-        format.html { render :edit }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+    if @user.update(update_params)
+      flash[:success] = "Settings updated"
+      redirect_to @user
+    else
+      render action: 'edit'
     end
   end
 
@@ -60,8 +56,9 @@ class UsersController < ApplicationController
       format.json { head :no_content }
     end
   end
+
   def followers
-    @users = @user.followers
+    @users = @user.followers.page(params[:page])
     @title = "Followers"
     render "followings"
   end
@@ -94,6 +91,10 @@ class UsersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_user
       @user = User.find(params[:id])
+    end
+
+    def update_params
+      params.require(:user).permit(:name, :password, :password_confirmation)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

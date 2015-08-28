@@ -1,6 +1,5 @@
 FirstApp::Application.routes.draw do
-  
-   resources :users do
+  resources :users do
     get 'followers', on: :member
     get 'followings', on: :member
     post 'follow', on: :member
