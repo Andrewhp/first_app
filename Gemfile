@@ -32,6 +32,11 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'will_paginate'
 
+#display full error context
+gem 'better_errors', group: :development
+gem 'binding_of_caller', group: :development
+
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
